@@ -1,9 +1,9 @@
-import { Coin } from "@/models/coin/coin";
+import { ICoin } from "@/models/coin/coin";
 
-export const feirm = {
-  "name": "Feirm",
-  "ticker": "XFE",
-  "coinType": 193,
+export class Feirm implements ICoin {
+  "name": "Feirm";
+  "ticker": "XFE";
+  "coinType": 193;
   "network": {
     "messagePrefix": "\x18DarkNet Signed Message:\n",
     "bech32": "",
@@ -15,4 +15,4 @@ export const feirm = {
     "scriptHash": 57,
     "wif": 55
   }
-} as Coin;
+}
