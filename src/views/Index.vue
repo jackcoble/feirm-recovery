@@ -1,9 +1,7 @@
 <template>
   <div>
     <h1 class="title">Feirm Recovery Tool</h1>
-    <button class="button" @click="showLiability">Open</button>
-    
-    <liability v-model:value="modalOpen" @visible="showLiability"></liability>
+    <liability v-model:value="disclaimerModal" @visible="showDisclaimer"></liability>
   </div>
 </template>
 
@@ -17,15 +15,19 @@ export default defineComponent({
   name: 'Index',
   data() {
     return {
-      modalOpen: false
+      disclaimerModal: false
     }
   },
   components: {
     Liability
   },
+  mounted() {
+    // Open the disclaimer modal
+    this.showDisclaimer();
+  },
   methods: {
-    showLiability() {
-      this.modalOpen = !this.modalOpen;
+    showDisclaimer() {
+      this.disclaimerModal = !this.disclaimerModal;
     },
   }
 });
