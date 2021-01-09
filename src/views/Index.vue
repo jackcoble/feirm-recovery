@@ -27,8 +27,8 @@
                   <label class="label">Select a coin</label>
                   <div class="control">
                     <div class="select">
-                      <select>
-                        <option>Feirm (XFE)</option>
+                      <select v-for="coin in coinsList" v-bind:key="coin.name">
+                        <option :value="coin.ticker.toLowerCase()">{{ coin.name }} ({{ coin.ticker }})</option>
                       </select>
                     </div>
                   </div>
@@ -58,6 +58,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { validateMnemonic } from "bip39";
+import { CoinFactory } from "@/models/coin/coin";
 
 // Components
 import Liability from "@/components/Liability.vue";
@@ -110,9 +111,13 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
 
+    // Create an instance of the coin factory and get a list of all available coins
+    const coinsList = CoinFactory.getAllCoins();
+
     return {
       store,
-      router
+      router,
+      coinsList
     }
   }
 });
