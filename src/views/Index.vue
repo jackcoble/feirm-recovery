@@ -64,6 +64,7 @@ import Liability from "@/components/Liability.vue";
 import InvalidMnemonic from "@/components/InvalidMnemonic.vue";
 
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Index",
@@ -100,13 +101,18 @@ export default defineComponent({
 
       // Store the mnemonic in Vuex
       this.store.commit("setMnemonic", mnemonic);
+
+      // Navigate to the recovery page
+      this.router.push({ path: "/recover" })
     }
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     return {
-      store
+      store,
+      router
     }
   }
 });
