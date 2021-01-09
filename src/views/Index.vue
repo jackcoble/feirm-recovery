@@ -27,8 +27,8 @@
                   <label class="label">Select a coin</label>
                   <div class="control">
                     <div class="select">
-                      <select v-for="coin in coinsList" v-bind:key="coin.name">
-                        <option :value="coin.ticker.toLowerCase()">{{ coin.name }} ({{ coin.ticker }})</option>
+                      <select v-for="coin in coinsList" v-bind:key="coin.name" required>
+                        <option :value="coin.ticker.toLowerCase()" :selected="ticker = coin.ticker.toLowerCase()">{{ coin.name }} ({{ coin.ticker }})</option>
                       </select>
                     </div>
                   </div>
@@ -38,7 +38,7 @@
                 <hr>
                 <div class="field">
                   <div class="control">
-                    <button class="button is-warning" @click="storeMnemonic(mnemonic)">Recover</button>
+                    <button class="button is-warning" @click="storeMnemonic(mnemonic, ticker)">Recover</button>
                   </div>
                 </div>
               </div>
@@ -72,6 +72,7 @@ export default defineComponent({
   data() {
     return {
       mnemonic: "",
+      ticker: "",
       disclaimerModal: false,
       invalidMnemonic: false
     };
@@ -88,7 +89,7 @@ export default defineComponent({
     showDisclaimer() {
       this.disclaimerModal = !this.disclaimerModal;
     },
-    storeMnemonic(mnemonic: string) {
+    storeMnemonic(mnemonic: string, ticker: string) {
       // Validate the mnemonic
       const valid = validateMnemonic(mnemonic)
 
@@ -104,7 +105,7 @@ export default defineComponent({
       this.store.commit("setMnemonic", mnemonic);
 
       // Navigate to the recovery page
-      this.router.push({ path: "/recover" })
+      this.router.push({ path: "/recover/" + ticker })
     }
   },
   setup() {
