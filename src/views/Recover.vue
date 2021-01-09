@@ -7,12 +7,19 @@
                         <div class="column is-8">
                             <!-- BIP39 Data -->
                             <div class="box">
-                                <h1 class="title has-text-weight-light">BIP39</h1>
+                                <h1 class="title has-text-weight-light">BIP39 Mnemonic</h1>
                                 
                                 <div class="field">
                                     <label class="label">Seed:</label>
                                     <div class="control">
                                         <input class="input" type="text" :value="bip39seed" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">BIP32 Root Key:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" :value="bip32rootKey" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -51,6 +58,9 @@
 </template>
 
 <script lang="ts">
+import { CoinFactory } from "@/models/coin/coin";
+import { mnemonicToSeedSync } from "bip39";
+import { fromSeed } from "bip32";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -59,12 +69,28 @@ export default defineComponent({
     name: "Recover",
     data() {
         return {
-            bip39seed: ""
+            bip39seed: "",
+            bip32rootKey: ""
         }
     },
-    mounted() {
+    async mounted() {
         // Get the ticker from the route parameters
-        const ticker = this.$route.params.ticker;
+        const ticker = this.$route.params.ticker as string;
+
+        // Get the mnemonic
+        const mnemonic = this.store.getters.getMnemonic;
+
+        // Fetch the full coin information
+        const coin = CoinFactory.getCoin(ticker);
+        const network = coin.network;
+
+        // Derive the seed from the mnemonic
+        const seed = await mnemonicToSeedSync(mnemonic);
+        this.bip39seed = seed.toString('hex');
+
+        // Derive the root key
+        const rootKey = fromSeed(seed, network);
+        this.bip32rootKey = rootKey.toBase58();
     },
     setup() {
         const store = useStore();
