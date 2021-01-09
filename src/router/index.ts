@@ -5,6 +5,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Index',
     component: () => import('@/views/Index.vue')
+  },
+  {
+    path: '/recover/:ticker',
+    name: 'Recover',
+    component: () => import('@/views/Recover.vue')
   }
 ]
 
