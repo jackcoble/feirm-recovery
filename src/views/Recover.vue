@@ -31,14 +31,14 @@
                                 <div class="field">
                                     <label class="label">Purpose:</label>
                                     <div class="control">
-                                        <input class="input" type="text" disabled>
+                                        <input class="input" type="text" disabled :value="coin.coinType">
                                     </div>
                                 </div>
 
                                 <div class="field">
                                     <label class="label">Coin:</label>
                                     <div class="control">
-                                        <input class="input" type="text" disabled>
+                                        <input class="input" type="text" disabled :value="coin.name + ' (' + coin.ticker + ')'">
                                     </div>
                                 </div>
 
@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { CoinFactory } from "@/models/coin/coin";
+import { Coin, CoinFactory } from "@/models/coin/coin";
 import { mnemonicToSeedSync } from "bip39";
 import { fromSeed } from "bip32";
 import { defineComponent } from "vue";
@@ -70,7 +70,8 @@ export default defineComponent({
     data() {
         return {
             bip39seed: "",
-            bip32rootKey: ""
+            bip32rootKey: "",
+            coin: {} as Coin
         }
     },
     async mounted() {
@@ -83,6 +84,7 @@ export default defineComponent({
         // Fetch the full coin information
         const coin = CoinFactory.getCoin(ticker);
         const network = coin.network;
+        this.coin = coin;
 
         // Derive the seed from the mnemonic
         const seed = await mnemonicToSeedSync(mnemonic);
