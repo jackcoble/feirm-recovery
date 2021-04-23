@@ -43,10 +43,19 @@
                                 </div>
 
                                 <div class="field">
-                                    <label class="label">Seed:</label>
+                                    <label class="label">Extended Public Key (XPUB)</label>
                                     <div class="control">
-                                        <input class="input" type="text" disabled>
+                                        <input class="input" type="text" disabled :value="xpub">
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Private keys -->
+                            <div class="box">
+                                <h1 class="title has-text-weight-light">Addresses and Private Keys</h1>
+                                
+                                <div v-for="address in addresses" :key="address">
+                                    <p>{{ address }}</p>
                                 </div>
                             </div>
                         </div>
@@ -64,14 +73,19 @@ import { fromSeed } from "bip32";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { payments } from "bitcoinjs-lib";
 
 export default defineComponent({
     name: "Recover",
     data() {
         return {
             bip39seed: "",
+            xpub: "",
             bip32rootKey: "",
-            coin: {} as Coin
+            coin: {} as Coin,
+
+            addresses: [] as string[],
+            privateKeys: [] as string[]
         }
     },
     async mounted() {
@@ -87,12 +101,19 @@ export default defineComponent({
         this.coin = coin;
 
         // Derive the seed from the mnemonic
-        const seed = await mnemonicToSeedSync(mnemonic);
+        const seed = mnemonicToSeedSync(mnemonic);
         this.bip39seed = seed.toString('hex');
 
         // Derive the root key
         const rootKey = fromSeed(seed, network);
         this.bip32rootKey = rootKey.toBase58();
+
+        // Derive the xpub
+        const child = rootKey.derivePath(`m/44'/` + coin.coinType + `'/0'`).neutered();
+        this.xpub = child.toBase58();
+
+        // Lookup confirmed UTXOs and derive private keys
+        // https://blockbook.feirm.com/api/v2/utxo/xpub6CQN15REuKp87oEmWwDCZmfAB5VJezBCaiExR2yywSkJG1ADZsU6qBZEM5Djjz9PB6GqgsdumQ3PWejTHiKCfL2AcmuUk98DM1wAEyQrri8?confirmed=true
     },
     setup() {
         const store = useStore();
