@@ -114,6 +114,8 @@ export default defineComponent({
 
         // Lookup confirmed UTXOs and derive private keys
         // https://blockbook.feirm.com/api/v2/utxo/xpub6CQN15REuKp87oEmWwDCZmfAB5VJezBCaiExR2yywSkJG1ADZsU6qBZEM5Djjz9PB6GqgsdumQ3PWejTHiKCfL2AcmuUk98DM1wAEyQrri8?confirmed=true
+        const keypair = rootKey.derivePath("m/44'/193'/0'/1/24")
+        console.log(keypair.toWIF());
     },
     setup() {
         const store = useStore();
